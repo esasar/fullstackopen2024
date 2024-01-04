@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>My test page</title>
+    <link href="styles/style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>Mozilla is cool</h1>
+    <img src="images/firefox-icon.png" alt="My test image" id="firefox-icon" width="100"/>
+
+    <p>At Mozilla, we're a global community of</p>
+
+    <ul>
+        <li>technologists</li>
+        <li>thinkers</li>
+        <li>builders</li>
+    </ul>
+
+    <p>
+      working together to keep the Internet alive and accessible, so people worldwide can be informed contributors
+      and creators of the Web. We believe this act of human collaboration across an open platform is essential to
+      individual growth and our collective future.
+    </p>
+    <p>
+      Read the <a href="https://www.mozilla.org/en-US/about/manifesto/">Mozilla Manifesto</a> to learn even more
+      about the values and principles that guide the pursuit of our mission.
+    </p>
+    <p>
+      Heres a form:
+    </p>
+    <form action="/my-handling-form-page" method="post">
+      <ul id="form-ul">
+        <li>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="user_name" />
+        </li>
+        <li>
+          <label for="mail">Email:</label>
+          <input type="email" id="mail" name="user_email" />
+        </li>
+        <li>
+          <label for="msg">Message:</label>
+          <textarea id="msg" name="user_message"></textarea>
+        </li>
+        <li class="button">
+          <button type="submit">Send your message</button>
+        </li>
+      </ul>
+    </form>
+  </body>
+</html>
