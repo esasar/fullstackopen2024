@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Inputfield from './components/Inputfield'
 import Phonebook from './components/Phonebook'
 import PersonForm from './components/PersonForm'
 import Notification from './components/Notification'
+import personService from './services/persons'
 
 function App() {
   const [persons, setPersons] = useState([])
@@ -14,11 +14,11 @@ function App() {
   const [messageState, setMessageState] = useState()
 
   useEffect(() => {
-    axios
-      .get('/api/persons')
-      .then(res => {
-        setPersons(res.data)
-    })
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
   }, [])
 
   const personsToShow = persons.filter(person => 
@@ -38,28 +38,38 @@ function App() {
     // Null is falsy
     if (existingPerson) {
       if (window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
-        axios
-          .put(`/api/persons/${existingPerson.id}`, personObject)
-          .then(res => {
-            setPersons(persons.map(p => p.id !== existingPerson.id ? p : res.data))
+        personService
+          .update(existingPerson.id, personObject)
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : updatedPerson))
             setNewName('')
             setNewNumber('')
             setMessageState('success')
-            setNotificationMessage(`Replaced number of ${res.data.name}`)
+            setNotificationMessage(`Replaced number of ${updatedPerson.name}`)
+            setTimeout(() => { setNotificationMessage(null) }, 5000)
+          })
+          .catch(error => {
+            setMessageState('error')
+            setNotificationMessage(error.response.data.error)
             setTimeout(() => { setNotificationMessage(null) }, 5000)
           })
       }
       return
     }
     
-    axios
-      .post('/api/persons', personObject)
-      .then(res => {
-        setPersons(persons.concat(res.data))
+    personService
+      .create(personObject)
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson))
         setNewName('')
         setNewNumber('')
         setMessageState('success')
-        setNotificationMessage(`Added ${res.data.name}`)
+        setNotificationMessage(`Added ${createdPerson.name}`)
+        setTimeout(() => { setNotificationMessage(null) }, 5000)
+      })
+      .catch(error => {
+        setMessageState('error')
+        setNotificationMessage(error.response.data.error)
         setTimeout(() => { setNotificationMessage(null) }, 5000)
       })
   }
@@ -80,8 +90,8 @@ function App() {
     const personToDelete = persons.find(p => p.id === id)
 
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
-      axios
-        .delete(`/api/persons/${id}`)
+      personService
+        .remove(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
           setNotificationMessage(`Deleted ${personToDelete.name}`)
