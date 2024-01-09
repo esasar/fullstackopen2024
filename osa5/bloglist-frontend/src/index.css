@@ -1,0 +1,100 @@
+.body {
+  background-color: #555;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.content * {
+  min-width: 300px;
+}
+
+.error {
+  color: red;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 20px;
+  background-color: #FFCCCB;
+}
+
+.success {
+  color: green;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 20px;
+  background-color: #90EE90;
+}
+
+.formField {
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formField>label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.formField>input {
+  border-style: solid;
+  border-radius: 3px;
+  border-width: 2px;
+  border-color: lightgray;
+  padding: 10px;
+}
+
+.loginform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bloglist {
+  display: flex;
+  flex-direction: column;
+}
+
+.blog {
+  text-align: left;
+}
+
+.blog>.title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.blog>.author {
+  font-style: italic;
+  font-size: 15px;
+}
+
+button {
+  border-style: solid;
+  border-radius: 3px;
+  border-width: 2px;
+  border-color: green;
+  background-color: lightgreen;
+  padding: 10px;
+  display: block;
+  width: 100%;
+}
