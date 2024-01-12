@@ -1,26 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Bloglist from './components/Bloglist'
-import Loginform from './components/Loginform'
-import Addform from './components/Addform'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState('error')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs(blogs)
+    )
   }, [])
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password
@@ -42,7 +41,7 @@ const App = () => {
 
       window.localStorage.setItem(
         'loggedBloglistAppUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -57,24 +56,12 @@ const App = () => {
     setUser(null)
   }
 
-  const handleAdd = async (event) => {
-    event.preventDefault()
-
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const blogObject = {
-        title: title,
-        author: author,
-        url: url
-      }
+      const returnedBlog = await blogService.create(blogObject)
 
-      await blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-          setTitle('')
-          setAuthor('')
-          setUrl('')
-        })
+      setBlogs(blogs.concat(returnedBlog))
 
       displayNotification(`a new blog ${blogObject.title} by ${blogObject.author} was added`, 'success')
     } catch (exception) {
@@ -88,32 +75,49 @@ const App = () => {
     setTimeout(() => {
       setNotification(null)
     }, 5000)
-  } 
+  }
+
+  const handleLike = async blog => {
+    const blogObject = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      title: blog.title,
+      url: blog.url
+    }
+    await blogService.update(blog.id, blogObject)
+    setBlogs(blogs.map(b => b.id === blog.id ? { ...b, likes: b.likes + 1 } : b))
+  }
+
+  const handleErase = async blog => {
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        displayNotification(`blog ${blog.title} by ${blog.author} was removed`, 'success')
+      }
+    } catch (exception) {
+      displayNotification('invalid title or url', 'error')
+    }
+  }
 
   return (
-    <div class="content">
+    <div className="content">
       <Notification message={notification} messageClass={notificationType} />
-      {!user && <Loginform 
+      {!user && <LoginForm
         handleLogin={handleLogin}
-        userNameValue={username}
+        usernameValue={username}
         onUsernameChange={({ target }) => setUsername(target.value)}
         passwordValue={password}
         onPasswordChange={({ target }) => setPassword(target.value)}
       />}
-      {user && 
+      {user &&
         <>
           <h2>blogs</h2>
           <p>{user.name} logged in<button onClick={handleLogout}>log out</button></p>
-          <Bloglist blogs={blogs} />
-          <Addform 
-            handleAdd={handleAdd}
-            titleValue={title}
-            onTitleChange={({ target }) => setTitle(target.value)}
-            authorValue={author}
-            onAuthorChange={({ target }) => setAuthor(target.value)}
-            urlValue={url}
-            onUrlChange={({ target }) => setUrl(target.value)}
-          />
+          <Bloglist blogs={blogs} handleErase={handleErase} handleLike={handleLike}/>
+          <Togglable buttonLabel={'new blog'} ref={blogFormRef}>
+            <BlogForm addBlog={addBlog} />
+          </Togglable>
         </>
       }
     </div>

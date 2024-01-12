@@ -15,10 +15,6 @@
   width: 100%;
 }
 
-.content * {
-  min-width: 300px;
-}
-
 .error {
   color: red;
   border-style: solid;
@@ -76,6 +72,15 @@
 
 .blog {
   text-align: left;
+  border-style: solid;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.blog>button {
+  border-color: black;
+  background-color: lightgray;
 }
 
 .blog>.title {
@@ -88,6 +93,20 @@
   font-size: 15px;
 }
 
+.blog>p>.likeButton {
+  background-color: lightyellow;
+  border-color: yellow;
+  display: inline-block;
+  margin-right: 10px;
+  width: 100px;
+}
+
+.blog>p>.likeButton:hover {
+  background-color: yellow; 
+  border-color: lightyellow;
+  cursor: pointer;
+}
+
 button {
   border-style: solid;
   border-radius: 3px;
@@ -96,5 +115,5 @@ button {
   background-color: lightgreen;
   padding: 10px;
   display: block;
-  width: 100%;
+  width: 100px;
 }
