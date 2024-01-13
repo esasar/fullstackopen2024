@@ -7,20 +7,20 @@ const LoginForm = ({ handleLogin, usernameValue, onUsernameChange, passwordValue
       <h2>log in to application</h2>
       <form onSubmit={handleLogin}>
         <Formfield
-          label="username: "
-          type="text"
+          label='username: '
+          type='text'
           value={usernameValue}
-          name="Username"
+          name='Username'
           onChange={onUsernameChange}
         />
         <Formfield
-          label="password: "
-          type="text"
+          label='password: '
+          type='text'
           value={passwordValue}
-          name="Password"
+          name='password'
           onChange={onPasswordChange}
         />
-        <button type="submit">login</button>
+        <button id='login-button' type='submit'>login</button>
       </form>
     </div>
   )
